@@ -6,8 +6,9 @@
 
 (enable-console-print!)
 
-
-(defonce app-state (r/atom {:contacts {}
+(defonce app-state (r/atom {:fields {}
+                            :contacts {}
+                            :prefix "/api"
                             :last-request []
                             :last-response nil}))
 
@@ -22,7 +23,8 @@
                            (update opts :handler (fn [h]
                                                    (fn [res]
                                                      (swap! app-state assoc :last-response res)
-                                                     (h res)))))))
+                                                     (when h
+                                                       (h res))))))))
 
 (def GET (partial request "GET"))
 (def POST (partial request "POST"))
@@ -41,46 +43,32 @@
 (defn selected-contact [contacts]
   (first (filter :selected  contacts)))
 
-(defn select! [contact-id]
-  (swap! app-state (fn [app]
-                     (let [c (selected-contact (contacts app))]
-                       (cond-> app
-                         c (update-in [:contacts (:id c)] dissoc :selected)
-                         contact-id (assoc-in [:contacts contact-id :selected] true))))))
-
-(defn toggle-edit! []
-  (swap! app-state update :editing not))
-
-(defn start-editing! []
-  (swap! app-state assoc :editing true))
-
-(defn stop-editing! []
-  (swap! app-state assoc :editing false))
+(defn select! [contact]
+  (swap! app-state assoc :fields contact))
 
 (defn remove-contact! [id]
   (swap! app-state update :contacts dissoc id))
 
-(defn submit-contact! [id]
-  (let [contact (find-contact id)
-        filtered (select-keys contact [:id :full-name :email :twitter])
-        args {:format prn-str :params filtered}]
-    (if (:unsaved contact)
-      (do
-        (POST "/api" (assoc args :handler (fn [saved]
-                                            (remove-contact! id)
-                                            (add-contact! saved)))))
-      (PUT (str "/api/" id) args))))
-
+(defn prep-contact [contact]
+  (-> contact
+      (select-keys [:id :full-name :email :twitter])
+      (update :id uuid)))
 
 (defn refresh! []
   (GET "/api" {:handler (fn [res]
                           (swap! app-state assoc :contacts {})
                           (doseq [c res]
-                            (add-contact! c)))})
-  (stop-editing!))
+                            (add-contact! c)))}))
 
-(defn update-card! [id key value]
-  (swap! app-state assoc-in [:contacts id key] value))
+(defn reset-fields! []
+  (swap! app-state assoc :fields {}))
+
+
+(defn new-random-uuid! []
+  (swap! app-state assoc-in [:fields :id] (str (random-uuid))))
+
+(defn update-field! [key value]
+  (swap! app-state assoc-in [:fields key] value))
 
 (defn initial [contact]
   (first (:full-name contact)))
@@ -91,45 +79,60 @@
           (sorted-map)
           (map (juxt initial identity) contacts)))
 
-(defn TextField [id key value]
+(defn TextField [key value]
   [:input.value {:type "text"
                  :value value
-                 :on-change #(update-card! id key (.. % -target -value))}])
+                 :on-change #(update-field! key (.. % -target -value))}])
 
-(defn Contact [{:keys [id full-name selected] :as contact}]
-  [:div.contact {:class (if selected "selected")}
-   [:div.full-name {:on-click #(if selected (select! nil) (select! id))} (if (empty? full-name) "<no name>" full-name)]])
+(defn Contact [{:keys [id full-name] :as contact}]
+  [:div.contact
+   [:div.full-name {:on-click #(select! contact)} (if (empty? full-name) "<no name>" full-name)]])
 
-(defn CardEntry [label contact key editing]
+(defn CardEntry [label contact key & more]
   [:div.card-entry
-   [:div.label label]
-   (if editing
-     [TextField (:id contact) key (key contact)]
-     [:div.value (key contact)])])
+   ^{:key "label"} [:div.label label]
+   ^{:key "field"} [TextField key (key contact)]
+   more])
 
-(defn Card [contact editing]
-  [:div.card
+(defn Card [prefix fields]
+  (let [id (str (:id fields))
+        path (str prefix "/" id)
+        disabled (empty? id)]
+    [:div.card
 
-   ^{:key "Name"} [CardEntry "Name" contact :full-name editing]
-   ^{:key "Email"} [CardEntry "Email" contact :email editing]
-   ^{:key "Twitter"} [CardEntry "Twitter" contact :twitter editing]
-   ^{:key "Skills"} [CardEntry "Skills" contact :skills editing]
-   [:div.buttonrow
-    [:button {:disabled (not contact)
-              :on-click (fn []
-                          (DELETE (str "/api/" (:id contact)))
-                          (refresh!))} "❎"]
-    [:button {:disabled (not contact)
-                          :on-click (fn []
-                                      (when editing (submit-contact! (:id contact)))
-                                      (toggle-edit!))} (if editing "✔️" "✏️")]
+     ^{:key "buttons"}
+     [:div.buttonrow
+      ^{:key "clear"}
+      [:button {:on-click reset-fields!} "❎"]
 
-    [:span.uuid (str (:id contact))]]
+      ^{:key "C"}
+      [:button {:on-click #(POST prefix {:params (prep-contact fields)})} "POST " prefix]
 
-   [:pre (prn-str contact)]])
+      [:div.rud-butts
+       ^{:key "R"}
+       [:button {:disabled disabled
+                 :on-click #(GET path {:handler select!})} "GET " path]
 
-(defn NameList [contacts]
+       ^{:key "U"}
+       [:button {:disabled disabled
+                 :on-click #(PUT path {:params (prep-contact fields)})} "PUT " path]
+
+       ^{:key "D"}
+       [:button {:disabled disabled
+                 :on-click #(DELETE path)} "DELETE " path]]
+
+                        ]
+     ^{:key ":id"} [CardEntry ":id" fields :id
+                    ^{:key "random-uuid"} [:button {:on-click new-random-uuid!} "random-uuid"]]
+     ^{:key ":full-name"} [CardEntry ":full-name" fields :full-name]
+     ^{:key ":email"} [CardEntry ":email" fields :email]
+     ^{:key ":twitter"} [CardEntry ":twitter" fields :twitter]
+
+     ]))
+
+(defn NameList [prefix contacts]
   [:div.name-list
+   [:button {:on-click refresh!} "GET " prefix]
    (for [[i cs] (contacts-by-initials contacts)]
      [:div.initial {:key i}
       [:div.letter {:key "initial"} i]
@@ -140,21 +143,19 @@
 (defn Rolodex [app-state]
   (let [app @app-state
         contacts (contacts app)
-        selected (selected-contact contacts)
+        fields (:fields app)
+        prefix (:prefix app)
         [method uri req-body] (:last-request app)
         response (:last-response app)]
     [:div.app
      [:div.header
-      [:div.brand "Reagodex"]
+      [:div.brand "Rolodex"]
       [:input.search {:type "text" :placeholder "🔎 Search"}]
-      [:button {:on-click #(let [id "new contact"]
-                             (add-contact! {:id id :unsaved true})
-                             (select! id)
-                             (start-editing!))  } "🚹"]
-      [:button {:on-click refresh!} "🔄"]]
+
+      ]
      [:div.rolodex
-      [NameList contacts]
-      [Card selected (:editing app)]]
+      [NameList prefix contacts]
+      [Card prefix fields]]
      [:pre method " " uri]
      [:pre (prn-str req-body)]
      [:pre (prn-str response)]]))

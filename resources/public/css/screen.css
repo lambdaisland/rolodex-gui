@@ -13,9 +13,10 @@ pre {
 button {
   background-color: rgba(102,119,187,1.00);
   border: 0;
-  padding: 0;
-  font-size: 2.5rem;
+  padding: 0.8rem;
+  font-size: 1.5rem;
   box-sizing: border-box;
+  color: rgba(252,249,257,1.00);
 }
 
 button:active {
@@ -59,16 +60,14 @@ button:disabled {
   font-size: 2.5rem;
 }
 
-.header button {
-  flex: 0 0 80px;
-  margin: 0 0 0 0.5rem;
-}
-
 .name-list {
   display: flex;
   flex: 0 1 350px;
   flex-direction: column;
-  background-color: rgba(232,229,237,1.00);
+}
+
+.name-list button {
+  margin-bottom: 0.5rem;
 }
 
 .name-list .initial:first-child {
@@ -79,6 +78,7 @@ button:disabled {
   display: flex;
   flex: 0 0 ;
   flex-direction: row;
+  background-color: rgba(232,229,237,1.00);
   border-top: 1px solid rgba(53,51,58,0.08);
 }
 
@@ -108,15 +108,15 @@ button:disabled {
 .card .card-entry {
   display: flex;
   justify-content: flex-start;
+  align-items: stretch;
   border-bottom: 1px solid rgba(232,229,237,1.00);
   line-height: 2;
 }
 
 .card .card-entry .label {
-  flex: 0.1 1 100px;
+  flex: 0 0 120px;
   padding-right: 1em;
   justify-self: center;
-  border-right: 1px solid rgba(232,229,237,1.00);
 }
 
 .card .card-entry .value {
@@ -124,11 +124,21 @@ button:disabled {
   padding-left: 1em;
 }
 
+.card .card-entry button {
+  font-size: 1em;
+  padding: 0.2em;
+  margin: 0 0 0 0.2em;
+}
+
 .card button {
-  font-size: 1.8rem;
-  padding: 0.8rem;
   margin-right: 0.5rem;
-  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card .rud-butts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .card .uuid {

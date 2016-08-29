@@ -27,9 +27,10 @@
   [:pre {:white-space "pre-wrap"}]
   [:button {:background-color (blue 90)
             :border "0"
-            :padding "0"
-            :font-size "2.5rem"
-            :box-sizing "border-box"}]
+            :padding "0.8rem"
+            :font-size "1.5rem"
+            :box-sizing "border-box"
+            :color (grey 2)}]
   [:button:active {:background-color (blue 40)}]
   [:button:disabled {:background-color (grey 20)
                      :filter "grayscale(100%)"}]
@@ -49,17 +50,17 @@
               :border (str "1px solid " (blue 90))
               :margin-left "1rem"
               :padding "0 1rem"
-              :font-size "2.5rem"}]
-   [:button {:flex "0 0 80px"
-             :margin "0 0 0 0.5rem"}]]
+              :font-size "2.5rem"}]]
   [:.name-list {:display "flex"
                 :flex "0 1 350px"
-                :flex-direction "column"
-                :background-color (grey 10)}
+                :flex-direction "column"}
+   [:button {:margin-bottom "0.5rem"}]
+
    [:.initial:first-child {:border "0"}]
    [:.initial {:display "flex"
                :flex "0 0 "
                :flex-direction "row"
+               :background-color (grey 10)
                :border-top (str "1px solid " (grey 80 0.08))}
     [:.letter {:flex "0 0 2em"
                :padding-left "1em"
@@ -74,18 +75,22 @@
            :padding-left "1rem"}
    [:.card-entry {:display "flex"
                   :justify-content "flex-start"
+                  :align-items "stretch"
                   :border-bottom (str "1px solid " (grey 10))
                   :line-height "2"}
-    [:.label {:flex "0.1 1 100px"
+    [:.label {:flex "0 0 120px"
               :padding-right "1em"
-              :justify-self "center"
-              :border-right (str "1px solid " (grey 10))}]
+              :justify-self "center"}]
     [:.value {:flex "5 5 500px"
-              :padding-left "1em"}]]
-   [:button {:font-size "1.8rem"
-             :padding "0.8rem"
-             :margin-right "0.5rem"
-             :margin-top "0.5rem"}]
+              :padding-left "1em"}]
+    [:button {:font-size "1em"
+              :padding "0.2em"
+              :margin "0 0 0 0.2em"}]]
+   [:button {:margin-right "0.5rem"
+             :margin-bottom "0.5rem"}]
+   [:.rud-butts {:display "flex"
+                 :flex-direction "column"
+                 :align-items "flex-start"}]
    [:.uuid {:color (grey 20)
             :font-size "1rem"
             :line-height "4"}]
