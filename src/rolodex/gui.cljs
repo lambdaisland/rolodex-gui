@@ -1,8 +1,9 @@
 (ns rolodex.gui
-  (:require [reagent.core :as r]
-            [ajax.core :as ajax]
-            [ajax.edn]
-            [cljs.reader :as edn]))
+  (:require [ajax.core :as ajax]
+            ajax.edn
+            [cljs.reader :as edn]
+            ;[fipp.edn :as fipp]
+            [reagent.core :as r]))
 
 (enable-console-print!)
 
@@ -10,7 +11,7 @@
                             :contacts {}
                             :prefix "/api"
                             :last-request []
-                            :last-response nil}))
+                            :last-response []}))
 
 (defn request [method uri opts]
   (swap! app-state assoc :last-request [method uri (:params opts)])
@@ -19,10 +20,12 @@
                           method
                           (merge
                            {:format prn-str
-                            :response-format ajax.edn/edn-read}
+                            :response-format ajax.edn/edn-read
+                            :error-handler (fn [{:keys [status status-text response] :as err}]
+                                             (swap! app-state assoc :last-response [status status-text response]))}
                            (update opts :handler (fn [h]
                                                    (fn [res]
-                                                     (swap! app-state assoc :last-response res)
+                                                     (swap! app-state assoc :last-response [200 "OK" res])
                                                      (when h
                                                        (h res))))))))
 
@@ -63,6 +66,9 @@
 (defn reset-fields! []
   (swap! app-state assoc :fields {}))
 
+(defn reset-contacts! []
+  (swap! app-state assoc :contacts {}))
+
 
 (defn new-random-uuid! []
   (swap! app-state assoc-in [:fields :id] (str (random-uuid))))
@@ -100,45 +106,57 @@
         disabled (empty? id)]
     [:div.card
 
-     ^{:key "buttons"}
+     ^{:key "buttons1"}
      [:div.buttonrow
-      ^{:key "clear"}
-      [:button {:on-click reset-fields!} "❎"]
+      [:div.rud-butts
+       ^{:key "C"} [:button {:title "Create a new contact" :on-click #(POST prefix {:params (prep-contact fields)})} "POST"]
+       [:div.path [:code prefix]]]]
 
-      ^{:key "C"}
-      [:button {:on-click #(POST prefix {:params (prep-contact fields)})} "POST " prefix]
+     ^{:key "buttons2"}
+     [:div.buttonrow
 
       [:div.rud-butts
        ^{:key "R"}
        [:button {:disabled disabled
-                 :on-click #(GET path {:handler select!})} "GET " path]
+                 :title "GET the contact with this id"
+                 :on-click #(GET path { :handler select!})} "GET"]
 
        ^{:key "U"}
        [:button {:disabled disabled
-                 :on-click #(PUT path {:params (prep-contact fields)})} "PUT " path]
+                 :title "Update the contact"
+                 :on-click #(PUT path {:params (prep-contact fields)})} "PUT"]
 
        ^{:key "D"}
        [:button {:disabled disabled
-                 :on-click #(DELETE path)} "DELETE " path]]
+                 :title "Delete the contact"
+                 :on-click #(DELETE path)} "DELETE"]
 
-                        ]
+       [:div.path [:code path]]]]
+
      ^{:key ":id"} [CardEntry ":id" fields :id
                     ^{:key "random-uuid"} [:button {:on-click new-random-uuid!} "random-uuid"]]
      ^{:key ":full-name"} [CardEntry ":full-name" fields :full-name]
      ^{:key ":email"} [CardEntry ":email" fields :email]
      ^{:key ":twitter"} [CardEntry ":twitter" fields :twitter]
 
+      ^{:key "clear"} [:button.clear {:title "Clear fields" :on-click reset-fields!} "❎"]
+
      ]))
 
-(defn NameList [prefix contacts]
-  [:div.name-list
-   [:button {:on-click refresh!} "GET " prefix]
-   (for [[i cs] (contacts-by-initials contacts)]
-     [:div.initial {:key i}
-      [:div.letter {:key "initial"} i]
-      [:div.contacts {:key "contacts"}
-       (for [c cs]
-         ^{:key (:id c)} [Contact c])]])])
+(defn NameList [prefix contacts fields]
+  [:div.name-list-wrapper
+   [:div.buttons
+    ^{:key "refresh"} [:button.refresh {:title "Get all the contacts" :on-click refresh!} "GET "]
+    ^{:key "path"} [:div.path [:code prefix]]]
+
+   [:div.name-list
+    (for [[i cs] (contacts-by-initials contacts)]
+      [:div.initial {:key i}
+       [:div.letter {:key "initial"} i]
+       [:div.contacts {:key "contacts"}
+        (for [c cs]
+          ^{:key (:id c)} [Contact c])]])]
+   ^{:key "clear"} [:button.clear {:title "Clear the list of contacts" :on-click reset-contacts!} "❎"]])
 
 (defn Rolodex [app-state]
   (let [app @app-state
@@ -146,7 +164,7 @@
         fields (:fields app)
         prefix (:prefix app)
         [method uri req-body] (:last-request app)
-        response (:last-response app)]
+        [status status-text response] (:last-response app)]
     [:div.app
      [:div.header
       [:div.brand "Rolodex"]
@@ -154,10 +172,15 @@
 
       ]
      [:div.rolodex
-      [NameList prefix contacts]
+      [NameList prefix contacts fields]
       [Card prefix fields]]
-     [:pre method " " uri]
-     [:pre (prn-str req-body)]
+     [:h3 "Last request"]
+     [:pre.underline "→ " method " " uri]
+     (if req-body
+       [:pre (prn-str req-body)])
+     [:pre.underline "← " status " " status-text]
      [:pre (prn-str response)]]))
+
+
 
 (r/render [Rolodex app-state] (js/document.getElementById "gui"))

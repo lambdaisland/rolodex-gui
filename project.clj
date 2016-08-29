@@ -10,7 +10,8 @@
 
                  [garden "1.3.2"]
                  [reagent "0.6.0-rc"]
-                 [cljs-ajax "0.5.8"]]
+                 [cljs-ajax "0.5.8"]
+                 [fipp "0.6.6"]]
 
   :source-paths ["src" "dev"]
 

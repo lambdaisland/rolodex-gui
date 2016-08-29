@@ -27,14 +27,19 @@
   [:pre {:white-space "pre-wrap"}]
   [:button {:background-color (blue 90)
             :border "0"
-            :padding "0.8rem"
-            :font-size "1.5rem"
+            :padding "0.5rem"
+            :font-size "1.3rem"
             :box-sizing "border-box"
-            :color (grey 2)}]
+            :color (grey 0)}]
   [:button:active {:background-color (blue 40)}]
   [:button:disabled {:background-color (grey 20)
                      :filter "grayscale(100%)"}]
   [:.app {:margin "2rem"}]
+  [:.path {:font-size "1.3rem"
+           :background-color (grey 7)
+           :padding "0.5rem"
+           :box-sizing "border-box"
+           }]
   [:.rolodex {:display "flex"
               :flex-direction "row"}]
   [:.header {:display "flex"
@@ -51,9 +56,14 @@
               :margin-left "1rem"
               :padding "0 1rem"
               :font-size "2.5rem"}]]
+  [:.name-list-wrapper {:flex "0 1 350px"}
+   [:.buttons {:display "flex"
+               :justify-content "space-between"
+               :margin-bottom "0.5rem"}
+    [:* {:flex "0 0 49%"}]]]
   [:.name-list {:display "flex"
-                :flex "0 1 350px"
-                :flex-direction "column"}
+                :flex-direction "column"
+                :margin-bottom "0.5rem"}
    [:button {:margin-bottom "0.5rem"}]
 
    [:.initial:first-child {:border "0"}]
@@ -72,25 +82,25 @@
                  :cursor "pointer"}]]]]
   [:.card {:flex "2 2 500px"
            :background-color (grey 0)
-           :padding-left "1rem"}
+           :padding-left "1rem"
+           }
    [:.card-entry {:display "flex"
                   :justify-content "flex-start"
                   :align-items "stretch"
                   :border-bottom (str "1px solid " (grey 10))
-                  :line-height "2"}
+                  :line-height "2"
+                  }
     [:.label {:flex "0 0 120px"
               :padding-right "1em"
               :justify-self "center"}]
     [:.value {:flex "5 5 500px"
-              :padding-left "1em"}]
-    [:button {:font-size "1em"
-              :padding "0.2em"
-              :margin "0 0 0 0.2em"}]]
-   [:button {:margin-right "0.5rem"
-             :margin-bottom "0.5rem"}]
+              :padding-left "1em"}]]
+   [:button.clear {:margin-top "0.5rem"
+                   :margin-right "0"
+                   :float "right"}]
+   [:button {:margin-right "0.5rem"}]
    [:.rud-butts {:display "flex"
-                 :flex-direction "column"
-                 :align-items "flex-start"}]
+                 :margin-bottom "0.5rem" }]
    [:.uuid {:color (grey 20)
             :font-size "1rem"
             :line-height "4"}]
