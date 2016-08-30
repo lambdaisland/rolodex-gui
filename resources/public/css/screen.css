@@ -1,9 +1,9 @@
 body {
+  font-family: sans-serif;
+  font-size: 20px;
   line-height: 1.5;
   color: rgba(33,30,38,1.00);
-  font-size: 20px;
   background-color: rgba(257,255,262,1.00);
-  font-family: sans-serif;
 }
 
 pre {
@@ -11,12 +11,12 @@ pre {
 }
 
 button {
+  background-color: rgba(102,119,187,1.00);
+  border: 0;
+  padding: 0.5rem;
+  font-size: 1.3rem;
   box-sizing: border-box;
   color: rgba(257,255,262,1.00);
-  font-size: 1.3rem;
-  background-color: rgba(102,119,187,1.00);
-  padding: 0.5rem;
-  border: 0;
 }
 
 button:active {
@@ -33,10 +33,10 @@ button:disabled {
 }
 
 .path {
-  box-sizing: border-box;
   font-size: 1.3rem;
   background-color: rgba(239,237,244,1.00);
   padding: 0.5rem;
+  box-sizing: border-box;
 }
 
 .rolodex {
@@ -45,26 +45,26 @@ button:disabled {
 }
 
 .header {
-  font-size: 2.5rem;
   display: flex;
   margin: 0.5rem 0 1rem 0;
+  font-size: 2.5rem;
 }
 
 .header .brand {
-  box-sizing: border-box;
+  flex: 0 0 350px;
+  background-color: rgba(102,119,187,1.00);
   color: rgba(252,249,257,1.00);
   font-size: 2.5rem;
-  background-color: rgba(102,119,187,1.00);
-  flex: 0 0 350px;
   padding: 0.5rem;
+  box-sizing: border-box;
 }
 
 .header .search {
-  font-size: 2.5rem;
-  margin-left: 1rem;
   flex: 1 1 100px;
-  padding: 0 1rem;
   border: 1px solid rgba(102,119,187,1.00);
+  margin-left: 1rem;
+  padding: 0 1rem;
+  font-size: 2.5rem;
 }
 
 .name-list-wrapper {
@@ -72,8 +72,8 @@ button:disabled {
 }
 
 .name-list-wrapper .buttons {
-  justify-content: space-between;
   display: flex;
+  justify-content: space-between;
   margin-bottom: 0.5rem;
 }
 
@@ -83,8 +83,8 @@ button:disabled {
 
 .name-list {
   display: flex;
-  margin-bottom: 0.5rem;
   flex-direction: column;
+  margin-bottom: 0.5rem;
 }
 
 .name-list button {
@@ -96,48 +96,48 @@ button:disabled {
 }
 
 .name-list .initial {
-  background-color: rgba(232,229,237,1.00);
-  flex: 0 0 ;
   display: flex;
-  border-top: 1px solid rgba(53,51,58,0.08);
+  flex: 0 0 ;
   flex-direction: row;
+  background-color: rgba(232,229,237,1.00);
+  border-top: 1px solid rgba(53,51,58,0.08);
 }
 
 .name-list .initial .letter {
   flex: 0 0 2em;
-  padding-top: 0.2em;
   padding-left: 1em;
+  padding-top: 0.2em;
 }
 
 .name-list .initial .contacts {
-  background-color: rgba(244,242,249,1.00);
   flex: 1 1 300px;
+  background-color: rgba(244,242,249,1.00);
   padding: 0.1em 0;
 }
 
 .name-list .initial .contacts .contact {
-  cursor: pointer;
   padding: 0.1em 1em;
+  cursor: pointer;
 }
 
 .card {
-  background-color: rgba(257,255,262,1.00);
   flex: 2 2 500px;
+  background-color: rgba(257,255,262,1.00);
   padding-left: 1rem;
 }
 
 .card .card-entry {
-  line-height: 2;
-  align-items: stretch;
-  justify-content: flex-start;
   display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
   border-bottom: 1px solid rgba(232,229,237,1.00);
+  line-height: 2;
 }
 
 .card .card-entry .label {
-  justify-self: center;
   flex: 0 0 120px;
   padding-right: 1em;
+  justify-self: center;
 }
 
 .card .card-entry .value {
@@ -146,9 +146,9 @@ button:disabled {
 }
 
 .card button.clear {
-  float: right;
   margin-top: 0.5rem;
   margin-right: 0;
+  float: right;
 }
 
 .card button {
@@ -161,9 +161,9 @@ button:disabled {
 }
 
 .card .uuid {
-  line-height: 4;
   color: rgba(206,204,211,1.00);
   font-size: 1rem;
+  line-height: 4;
 }
 
 .card pre {
@@ -172,6 +172,30 @@ button:disabled {
 }
 
 .selected {
-  color: rgba(247,244,252,1.00);
   background-color: rgba(94,91,99,1.00);
+  color: rgba(247,244,252,1.00);
+}
+
+.color.string {
+  color: #3e999f;
+}
+
+.color.keyword {
+  color: #4271ae;
+}
+
+.color.bracket {
+  color: #eab700;
+}
+
+.color.curly {
+  color: #718c00;
+}
+
+.uuid {
+  color: #3e9e74;
+}
+
+.uuid .tag {
+  font-weight: bold;
 }

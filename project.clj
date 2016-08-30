@@ -1,13 +1,12 @@
 (defproject rolodex-gui "0.1.0"
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.225"]
+                 [org.clojure/clojurescript "1.9.227"]
                  [clj-http "2.2.0"]
                  [ring/ring-core "1.3.2"]
                  [com.stuartsierra/component "0.3.1"]
-                 [figwheel-sidecar "0.5.4-2"]
+                 [figwheel-sidecar "0.5.6"]
                  [com.cemerick/piggieback "0.2.1"]
                  [hawk "0.2.10"]
-
                  [garden "1.3.2"]
                  [reagent "0.6.0-rc"]
                  [cljs-ajax "0.5.8"]
@@ -15,7 +14,8 @@
 
   :source-paths ["src" "dev"]
 
-  :plugins [[lein-figwheel "0.5.4-2"]]
+  :plugins [[lein-figwheel "0.5.6"]
+            [lein-cljsbuild "1.1.4"]]
 
   :figwheel {:ring-handler rolodex.devserver/api-proxy
              :css-dirs ["resources/public/css"]}

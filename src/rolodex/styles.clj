@@ -108,4 +108,11 @@
           :font-size "1.5rem"}]]
   [:.selected {:background-color (grey 64)
                :color (grey 4)}]
+  [:.color
+   [:&.string {:color "#3e999f"}]
+   [:&.keyword {:color "#4271ae"}]
+   [:&.bracket {:color "#eab700"}]
+   [:&.curly {:color "#718c00"}]]
+   [:&.uuid {:color "#3e9e74"}
+    [:.tag {:font-weight :bold}]]
   )

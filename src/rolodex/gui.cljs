@@ -1,9 +1,8 @@
 (ns rolodex.gui
   (:require [ajax.core :as ajax]
             ajax.edn
-            [cljs.reader :as edn]
-            ;[fipp.edn :as fipp]
-            [reagent.core :as r]))
+            [reagent.core :as r]
+            [rolodex.colorize :refer [colorized]]))
 
 (enable-console-print!)
 
@@ -177,10 +176,9 @@
      [:h3 "Last request"]
      [:pre.underline "→ " method " " uri]
      (if req-body
-       [:pre (prn-str req-body)])
+       [:pre (colorized req-body)])
      [:pre.underline "← " status " " status-text]
-     [:pre (prn-str response)]]))
-
-
+     (if response
+       [:pre (colorized response)])]))
 
 (r/render [Rolodex app-state] (js/document.getElementById "gui"))
