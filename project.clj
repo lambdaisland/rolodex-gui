@@ -1,11 +1,11 @@
 (defproject rolodex-gui "0.1.0"
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.227"]
+                 [org.clojure/clojurescript "1.10.520"]
                  [clj-http "2.2.0"]
                  [ring/ring-core "1.3.2"]
                  [com.stuartsierra/component "0.3.1"]
-                 [figwheel-sidecar "0.5.6"]
-                 [com.cemerick/piggieback "0.2.1"]
+                 [figwheel-sidecar "0.5.19"]
+                 [cider/piggieback "0.4.1"]
                  [hawk "0.2.10"]
                  [garden "1.3.2"]
                  [reagent "0.6.0-rc"]
@@ -22,7 +22,7 @@
 
   :main rolodex.devserver
 
-  :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+  :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
 
   :cljsbuild
   {:builds [{:id "dev"
